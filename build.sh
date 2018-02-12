@@ -1,17 +1,17 @@
 #!/bin/bash
 
-#   =====================
-#   Snap! Social Platform
-#   =====================
+#   ========
+#   Snippets
+#   ========
+#
+#   Snippets is Not (In Principle) a Perfect, Exhaustive Template System
 #
 #   Site builder
 #
 #   written by Bernat Romagosa
-#   bernat@snap4arduino.rocks
+#   bernat@romagosa.work
 #
-#   Copyright (C) 2017 by Bernat Romagosa
-#
-#   This file is part of the Snap! Social Platform.
+#   Copyright (C) 2018 by Bernat Romagosa
 #
 #   This program is free software: you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License as published by
