@@ -72,7 +72,7 @@ Given the following files:
 
 **static/img/logo.png**
 
-![example image](https://raw.githubusercontent.com/bromagosa/Snippets/blob/master/static/img/logo.png)
+![example image](https://github.com/bromagosa/Snippets/blob/master/static/img/logo.png?raw=true)
 
 Running `./build.sh` will generate the file:
 
