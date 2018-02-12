@@ -1,0 +1,6 @@
+<html>
+    <head><title>An example page</title></head>
+    <body>
+        @content
+    </body>
+<html>

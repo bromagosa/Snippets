@@ -1,0 +1,3 @@
+<h1>Welcome to this test site, ${name}!</h1>
+<p>This is just an example site to show you how the page descriptor system works.</p>
+<img src="img/logo.png">

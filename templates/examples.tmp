@@ -1,0 +1,4 @@
+<div>
+    <h2>Here's a couple of embedded templates:</h2>
+    @content
+</div>
