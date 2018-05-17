@@ -97,3 +97,5 @@ Running `./build.sh` will generate the file:
 
 The [social website](http://github.com/bromagosa/SnapSite) for the [Snap!](https://snap.berkeley.edu) programming language/environment is built using Snippets.
 
+The [microBlocks website](http://microblocks.fun) is also built using Snippets, and its source is [here](https://github.com/bromagosa/microblocks-site).
+
