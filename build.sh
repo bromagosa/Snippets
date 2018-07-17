@@ -35,7 +35,6 @@ if [[ "$OSTYPE" == "linux-gnu" ]]; then
     stat_find_param='-c'
 elif [[ "$OSTYPE" == "darwin"* ]]; then
     stat_find_param='-f'
-    sed_input_extras='""'
 fi
 
 # iterate over all .snp page descriptor files
@@ -73,12 +72,16 @@ function build() {
 
             if grep -q @content $html; then
                 # replace the @content string for the contents of the template file
-                sed -e '/@content/ {' -e 'r tmp.html' -e 'd' -e '}' -i $sed_input_extras $html
+                if [[ "$OSTYPE" == "linux-gnu" ]]; then
+                    sed -e '/@content/ {' -e 'r tmp.html' -e 'd' -e '}' -i $html
+                elif [[ "$OSTYPE" == "darwin"* ]]; then
+                    sed -e '/@content/ {' -e 'r tmp.html' -e 'd' -e '}' -i ''  $html
+                fi
             else
                 cat tmp.html >> $html
             fi
             # fix char encoding in case sed has messed it up
-            
+
             if [[ "$OSTYPE" == "linux-gnu" ]]; then
                 iconv -f `file -i $html | cut -f2 -d=` -t utf-8 $html -o $html
             elif [[ "$OSTYPE" == "darwin"* ]]; then
