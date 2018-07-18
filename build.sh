@@ -67,18 +67,18 @@ function build() {
             for template in ${template_names[*]}; do
                 # Replace @include inside a template
                  include_pattern='(.*)@include=(.*)'
-                 rm -f template.html
+                 rm -f .template.html
                  while IFS= read line; do
                      if [[ $line =~ $include_pattern ]]; then
                          # Preserve indents; prefix each line with spacing.
-                         sed -e "s/^/${BASH_REMATCH[1]}/" templates/${BASH_REMATCH[2]}.tmp >> template.html
+                         sed -e "s/^/${BASH_REMATCH[1]}/" templates/${BASH_REMATCH[2]}.tmp >> .template.html
                      else
-                         echo "$line" >> template.html
+                         echo "$line" >> .template.html
                      fi
                  done < "templates/$template.tmp"
                  # append to the temporary HTML file, evaluating any possible params
-                 envsubst < template.html >> tmp.html
-                 rm -f template.html
+                 envsubst < .template.html >> tmp.html
+                 rm -f .template.html
             done
 
             if grep -q @content $html; then
