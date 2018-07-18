@@ -80,8 +80,8 @@ function build() {
             else
                 cat tmp.html >> $html
             fi
-            # fix char encoding in case sed has messed it up
 
+            # fix char encoding in case sed has messed it up
             if [[ "$OSTYPE" == "linux-gnu" ]]; then
                 iconv -f `file -i $html | cut -f2 -d=` -t utf-8 $html -o $html
             elif [[ "$OSTYPE" == "darwin"* ]]; then
