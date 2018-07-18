@@ -35,7 +35,6 @@ if [[ "$OSTYPE" == "linux-gnu" ]]; then
     stat_find_param='-c'
 elif [[ "$OSTYPE" == "darwin"* ]]; then
     stat_find_param='-f'
-    sed_input_extras='""'
 fi
 
 # iterate over all .snp page descriptor files
@@ -66,19 +65,34 @@ function build() {
             declare -a template_names="(${descriptor//;/ })";
             rm -f tmp.html
             for template in ${template_names[*]}; do
-                # append to the temporary HTML file, evaluating any possible params
-                envsubst < templates/$template.tmp >> tmp.html
-                # cat templates/$template.tmp >> tmp.html
+                # Replace @include inside a template
+                 include_pattern='(.*)@include=(.*)'
+                 rm -f .template.html
+                 while IFS= read line; do
+                     if [[ $line =~ $include_pattern ]]; then
+                         # Preserve indents; prefix each line with spacing.
+                         sed -e "s/^/${BASH_REMATCH[1]}/" templates/${BASH_REMATCH[2]}.tmp >> .template.html
+                     else
+                         echo "$line" >> .template.html
+                     fi
+                 done < "templates/$template.tmp"
+                 # append to the temporary HTML file, evaluating any possible params
+                 envsubst < .template.html >> tmp.html
+                 rm -f .template.html
             done
 
             if grep -q @content $html; then
                 # replace the @content string for the contents of the template file
-                sed -e '/@content/ {' -e 'r tmp.html' -e 'd' -e '}' -i $sed_input_extras $html
+                if [[ "$OSTYPE" == "linux-gnu" ]]; then
+                    sed -e '/@content/ {' -e 'r tmp.html' -e 'd' -e '}' -i $html
+                elif [[ "$OSTYPE" == "darwin"* ]]; then
+                    sed -e '/@content/ {' -e 'r tmp.html' -e 'd' -e '}' -i ''  $html
+                fi
             else
                 cat tmp.html >> $html
             fi
+
             # fix char encoding in case sed has messed it up
-            
             if [[ "$OSTYPE" == "linux-gnu" ]]; then
                 iconv -f `file -i $html | cut -f2 -d=` -t utf-8 $html -o $html
             elif [[ "$OSTYPE" == "darwin"* ]]; then
