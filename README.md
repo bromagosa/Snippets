@@ -11,7 +11,7 @@ Snippets uses a page descriptor system designed to be super simple and save you 
 * Multiple templates can be concatenated together by placing them in the same line, separated by semicolons.
 * Template names in the descriptor file are matched against files under the `/templates` directory.
 * Templates are plain HTML files with a `.tmp` extension that may or may not define a `@content` placeholder.
-* Templates may include an `@include=name` directive. `@includes` should be on their own line, and `name` should be the base name of another template file.
+* Templates may include an `@include=name` directive. `@include`s should be on their own line, and `name` should be the base name of another template file.
     * Included templates will also resolve any parameters.
     * Currently, nested or recursive includes are not supported.
 * If said placeholder exists, the templates found in the next line of the descriptor file are going to be rendered into it.
