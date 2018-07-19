@@ -11,6 +11,9 @@ Snippets uses a page descriptor system designed to be super simple and save you 
 * Multiple templates can be concatenated together by placing them in the same line, separated by semicolons.
 * Template names in the descriptor file are matched against files under the `/templates` directory.
 * Templates are plain HTML files with a `.tmp` extension that may or may not define a `@content` placeholder.
+* Templates may include an `@include=name` directive. `@includes` should be on their own line, and `name` should be the base name of another template file.
+    * Included templates will also resolve any parameters.
+    * Currently, nested or recursive includes are not supported.
 * If said placeholder exists, the templates found in the next line of the descriptor file are going to be rendered into it.
 * Parameters in a page descriptor file are defined one per line by following the pattern `@param myparameter=myvalue`. Multi-word values should be enclosed by double quotes.
 * Access these parameters in `.tmp` files by prefixing them with a dollar sign and, optionally, enclosing them between curly brackets, as in `$myparameter` or `${myparameter}`.
@@ -42,6 +45,7 @@ Given the following files:
         <head><title>An example page</title></head>
         <body>
             @content
+            @include=footer
         </body>
     </html>
 
@@ -70,6 +74,10 @@ Given the following files:
 
     <span>Third One</span>
 
+**templates/footer.tmp**
+
+    <p>Thanks for checking out my site.</p>
+
 **static/img/logo.png**
 
 ![example image](https://github.com/bromagosa/Snippets/blob/master/static/img/logo.png?raw=true)
@@ -90,6 +98,7 @@ Running `./build.sh` will generate the file:
                 <span>Second One</span>
                 <span>Third One</span>
             </div>
+            <p>Thanks for checking out my site.</p>
         </body>
     </html>
 
