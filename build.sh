@@ -11,7 +11,7 @@
 #   written by Bernat Romagosa
 #   bernat@romagosa.work
 #
-#   Copyright (C) 2018 by Bernat Romagosa
+#   Copyright (C) 2019 by Bernat Romagosa
 #
 #   This program is free software: you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License as published by
@@ -144,7 +144,7 @@ if test -n "$watch" -o -n "$w"; then
     declare -A lasttimes
     while sleep 1; do
         # ignores hidden files and dirs (./.*) and the www folder
-        for file in `find . -type f | grep -v "^\./\." | grep -v "./www/.*"`; do
+        for file in `find . -type f | grep -v "^\./\." | grep -v "./www/.*"` | grep -v "\.swp$"; do
             time=`stat $stat_find_param %Z "$file"`
 
             if [ -z ${lasttimes[$file]} ]; then
