@@ -72,7 +72,7 @@ function build() {
                 while IFS= read line; do
                     if [[ $line =~ $include_pattern ]]; then
                         # Preserve indents; prefix each line with spacing.
-                        sed -e "s/^/${BASH_REMATCH[1]}/" templates/${BASH_REMATCH[2]}.tmp >> .template.html
+                        cat "templates/${line#*@include=}.tmp" >> .template.html
                     elif [[ $line =~ $param_pattern ]]; then
                         eval "export ${line#@param }"
                     else
