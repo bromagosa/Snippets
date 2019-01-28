@@ -30,7 +30,7 @@
 # parse parameters
 while echo $1 | grep ^- > /dev/null; do eval $( echo $1 | sed 's/-//g' | sed 's/=.*//g' | tr -d '\012')=$( echo $1 | sed 's/.*=//g' | tr -d '\012'); shift; done
 
-# Platform specific argument tweaks.
+# platform specific argument tweaks.
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
     stat_find_param='-c'
 elif [[ "$OSTYPE" == "darwin"* ]]; then
@@ -54,7 +54,7 @@ function build() {
         do
             # check whether the current line defines parameter values
             if [[ $descriptor == @param* ]]; then
-                # we remove everything after "@params " and execute it,
+                # we remove everything after "@param " and execute it,
                 # then we jump to the next line
                 eval "export ${descriptor#@param }"
                 continue
@@ -65,23 +65,33 @@ function build() {
             declare -a template_names="(${descriptor//;/ })";
             rm -f tmp.html
             for template in ${template_names[*]}; do
-                # Replace @include inside a template, and evaluate any @param
+                # replace @include inside a template, and evaluate any @param
                 include_pattern='(.*)@include=(.*)'
                 param_pattern='(.*)@param(.*)'
-                rm -f .template.html
-                while IFS= read line; do
-                    if [[ $line =~ $include_pattern ]]; then
-                        # Preserve indents; prefix each line with spacing.
-                        cat "templates/${line#*@include=}.tmp" >> .template.html
-                    elif [[ $line =~ $param_pattern ]]; then
-                        eval "export ${line#@param }"
-                    else
-                        echo "$line" >> .template.html
-                    fi
-                done < "templates/$template.tmp"
+                current_input_file="templates/$template.tmp"
+                current_output_file=".temp.`cat /dev/urandom | tr -dc 'a-z' | fold -w 16 | head -n 1`"
+                function parse_includes() {
+                    while IFS= read line; do
+                        if [[ $line =~ $include_pattern ]]; then
+                            # recursively include file, substituting any params
+                            envsubst < "templates/${line#*@include=}.tmp" >> $current_output_file
+                            current_input_file=$current_output_file
+                            current_output_file=".temp.`cat /dev/urandom | tr -dc 'a-z' | fold -w 16 | head -n 1`"
+                            parse_includes
+                        elif [[ $line =~ $param_pattern ]]; then
+                            # evaluate any params found
+                            eval "export ${line#@param }"
+                        else
+                            echo "$line" >> $current_output_file
+                        fi
+                    done < $current_input_file
+                }
+
+                parse_includes
+
                 # append to the temporary HTML file, evaluating any possible params
-                envsubst < .template.html >> tmp.html
-                rm -f .template.html
+                envsubst < $current_output_file >> tmp.html
+                rm -f .temp.*
             done
 
             if grep -q @content $html; then
@@ -141,7 +151,7 @@ elif test -n "$S"; then # https is only supported by http-server
     (cd www; exec -a httpserver http-server -S &)
 fi
 
-# Watch and build on any file change
+# watch and build on any file change
 
 if test -n "$watch" -o -n "$w"; then
     declare -A lasttimes
