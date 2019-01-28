@@ -13,7 +13,7 @@ Snippets uses a page descriptor system designed to be super simple and save you 
 * Templates are plain HTML files with a `.tmp` extension that may or may not define a `@content` placeholder.
 * Templates may include an `@include=name` directive. `@include`s should be on their own line, and `name` should be the base name of another template file.
     * Included templates will also resolve any parameters.
-    * Currently, nested or recursive includes are not supported.
+    * Nested or recursive includes are supported.
 * If said placeholder exists, the templates found in the next line of the descriptor file are going to be rendered into it.
 * Parameters in a page descriptor file are defined one per line by following the pattern `@param myparameter=myvalue`. Multi-word values should be enclosed by double quotes.
 * Access these parameters in `.tmp` files by prefixing them with a dollar sign and, optionally, enclosing them between curly brackets, as in `$myparameter` or `${myparameter}`.
