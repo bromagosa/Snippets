@@ -37,6 +37,12 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
     stat_find_param='-f'
 fi
 
+# Generate 16 random characters
+# See https://unix.stackexchange.com/a/230676
+function random16() {
+    echo $(LC_ALL=C tr -dc 'a-z' < /dev/urandom | head -c 16)
+}
+
 # iterate over all .snp page descriptor files
 function build() {
     for page in `ls pages/*.snp`; do
@@ -69,14 +75,14 @@ function build() {
                 include_pattern='(.*)@include=(.*)'
                 param_pattern='(.*)@param(.*)'
                 current_input_file="templates/$template.tmp"
-                current_output_file=".temp.`cat /dev/urandom | tr -dc 'a-z' | fold -w 16 | head -n 1`"
+                current_output_file=".temp.`random16`"
                 function parse_includes() {
                     while IFS= read line; do
                         if [[ $line =~ $include_pattern ]]; then
                             # recursively include file, substituting any params
                             envsubst < "templates/${line#*@include=}.tmp" >> $current_output_file
                             current_input_file=$current_output_file
-                            current_output_file=".temp.`cat /dev/urandom | tr -dc 'a-z' | fold -w 16 | head -n 1`"
+                            current_output_file=".temp.`random16`"
                             parse_includes
                         elif [[ $line =~ $param_pattern ]]; then
                             # evaluate any params found
