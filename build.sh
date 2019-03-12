@@ -107,7 +107,8 @@ function build() {
 
             # fix char encoding in case sed has messed it up
             if [[ "$OSTYPE" == "linux-gnu" ]]; then
-                iconv -f `file -i $html | cut -f2 -d=` -t utf-8 $html -o $html
+                iconv -f `file -i $html | cut -f2 -d=` -t utf-8 $html -o iconv.out
+                mv -f iconv.out $html
             elif [[ "$OSTYPE" == "darwin"* ]]; then
                 iconv -f `file -I $html | cut -f2 -d=` -t UTF-8 $html > iconv.out
                 mv -f iconv.out $html
@@ -126,19 +127,27 @@ function build() {
 build
 
 if test -n "$serve" -o -n "$s"; then
+    port=8080
+
+    if [[ $serve == ?(-)+([0-9]) ]]; then
+        port=$serve
+    elif [[ $s == ?(-)+([0-9]) ]]; then
+        port=$s
+    fi
+
     function runserver() {
         (cd www; exec -a httpserver $@ &)
     }
 
     pkill -f httpserver
     if test -n `which http-server`; then
-        runserver http-server
+        runserver http-server -p $port
     elif test -n `which python`; then
-        runserver python -m SimpleHTTPServer 8080
+        runserver python -m SimpleHTTPServer $port
     elif test -n `which ruby`; then
-        runserver ruby -run -ehttpd . -p8080
+        runserver ruby -run -ehttpd . -p$port
     elif test -n `which php`; then
-        runserver php -S 127.0.0.1:8080
+        runserver php -S 127.0.0.1:$port
     else
         echo "Could not find a way to serve static files. Please install one of the following:"
         echo
@@ -148,7 +157,7 @@ if test -n "$serve" -o -n "$s"; then
         echo "PHP"
     fi
 elif test -n "$S"; then # https is only supported by http-server
-    (cd www; exec -a httpserver http-server -S &)
+    (cd www; exec -a httpserver http-server -S -p 443 &)
 fi
 
 # watch and build on any file change
