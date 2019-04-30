@@ -115,7 +115,7 @@ if test -n "$watch" -o -n "$w"; then
     declare -A lasttimes
     while sleep 1; do
         # ignores hidden files and dirs (./.*) and the www folder
-        for file in `find -type f | grep -v "^\./\." | grep -v "./www/.*"`; do
+        for file in `find -type f | grep -v "^\./\." | grep -v "./www/.*" | grep -v "./docs/.*"`; do
             time=`stat -c %Z "$file"`
 
             if [ -z ${lasttimes[$file]} ]; then
