@@ -45,6 +45,7 @@ function random16() {
 
 # iterate over all .snp page descriptor files
 function build() {
+    mkdir -p www
     for page in `ls pages/*.snp`; do
         echo "Building $page..."
 
