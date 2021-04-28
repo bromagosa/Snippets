@@ -124,7 +124,24 @@ function build() {
     done
 
     # copy over all static files
+    if [[ -d "www/libs/" ]]; then
+        rm -R "www/libs/"
+    fi
+
     cp -R static/* www
+
+    snap_dir='../snap/src/'
+    for snap_filename in "cloud.js" "sha512.js"; do
+        if [[ ! -f "www/libs/${snap_filename}" ]]; then
+            if [[ -f ${snap_dir}${snap_filename} ]]; then
+                echo "Copying ${snap_filename}"
+                cp $snap_dir$snap_filename www/libs/
+            else
+                echo "File ${snap_filename} doesn't exist in Snap! or not cloned"
+                exit 1;
+            fi
+        fi
+    done
 
     rm -f tmp.html
     rm -f iconv.out
@@ -173,6 +190,7 @@ if test -n "$watch" -o -n "$w"; then
     declare -A lasttimes
     while sleep 1; do
         # ignores hidden files and dirs (./.*), the www and docs folders, and VIM .swp files
+        # TODO Need to check when "/SnapCloud/snap" files are edited
         for file in `find . -type f | grep -v "^\./\." | grep -v "./www/.*" | grep -v "./docs/.*" | grep -v "\.swp$"`; do
             time=`stat $stat_find_param %Z "$file"`
 
