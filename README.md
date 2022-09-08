@@ -104,7 +104,8 @@ Running `./build.sh` will generate the file:
 
 # In the Wild
 
-The [social website](http://github.com/bromagosa/SnapSite) for the [Snap!](https://snap.berkeley.edu) programming language/environment is built using Snippets.
+Snippets is not being used anymore. In the past, the MicroBlocks site (a small one) and the Snap! community site (a reasonably big and complex one) were built using Snippets, but we've graduated both of them to more mature systems.  Snippets was a fun experiment, but I don't recommend using it unless it's just for fun and giggles, or for your very small website.
 
-The [microBlocks website](http://microblocks.fun) is also built using Snippets, and its source is [here](https://github.com/bromagosa/microblocks-site).
+The moral of the story is that you may not want to build a full static site generator in Bash, and if you do, it may not take "just a weekend" and do everything you'll ever need it to do.
 
+Though I'm a big fan of reinventing wheels and I think you should always reinvent your own, this one particular wheel was not fit for the 18-wheeler tractor trailer that the Snap! site ended up being :)
